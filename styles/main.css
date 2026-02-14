@@ -1,0 +1,9 @@
+:root { color-scheme: dark; font-family: 'Segoe UI', sans-serif; }
+body { margin: 0; background: #0b0f16; overflow: hidden; }
+#game { width: 100vw; height: 100vh; }
+#ui-root { position: fixed; inset: 0; pointer-events: none; }
+.panel { position: absolute; top: 15%; left: 50%; transform: translateX(-50%); background: rgba(10,15,20,0.9); border: 2px solid #77f; padding: 16px; color: #fff; pointer-events: auto; min-width: 280px; }
+.hidden { display: none; }
+label { display: flex; justify-content: space-between; gap: 12px; margin: 8px 0; }
+button { display:block; width:100%; margin:8px 0; background:#334; color:#fff; border:1px solid #88a; padding:8px; }
+body.high-contrast .panel { border-color: #fff; background: #000; }
