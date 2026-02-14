@@ -1,0 +1,28 @@
+export const physicsConfig = {
+  targetFps: 60,
+  gravity: 2200,
+  maxHorizontalSpeed: 260,
+  acceleration: 2400,
+  deceleration: 3000,
+  frictionStopMs: 180,
+  jumpVelocity: -760,
+  jumpHeight: [120, 140],
+  coyoteMs: 120,
+  jumpBufferMs: 110,
+  jumpCutGravityMultiplier: 2.1,
+  fallMultiplier: 1.85,
+  maxFallSpeed: 1200,
+  playerIFrameMs: 350,
+  hitstopMs: { light: 35, heavy: 75 },
+  hitstunMs: { common: 120, elite: 80, boss: 40 },
+  knockbackCap: { x: 260, y: 380 },
+  worldBounds: { yMin: -1000, yMax: 2500 },
+  collisionLayers: {
+    player: 1,
+    ground: 2,
+    platform: 4,
+    enemy: 8,
+    projectile: 16,
+    loot: 32,
+  }
+};

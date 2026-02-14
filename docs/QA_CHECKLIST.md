@@ -1,0 +1,31 @@
+# QA Checklist
+- [x] Static server boot validated.
+- [x] Deterministic run seed stored and reused.
+- [x] Side camera smoothing verified.
+- [x] Gravity/accel/decel/coyote/jump buffer/fall multiplier checked.
+- [x] Anti-tunneling mitigation via restricted projectile speed and short-step collisions.
+- [x] Fall fail-safe and off-screen cleanup validated.
+- [x] Basic combo (3 light + heavy) functional.
+- [x] 5 skills have cost/cooldown/effect hooks.
+- [x] Damage, crit, resist-ready status schema implemented.
+- [x] Non-linear XP progression active.
+- [x] Gold economy entries configured.
+- [x] 24+ passives/rewards entries configured (30 reward entries).
+- [x] Loot rarity weights configured.
+- [x] FSM baseline present for enemies.
+- [x] Group fairness cap configured.
+- [x] 10 enemy types configured.
+- [x] 4 elite mutator placeholders configured.
+- [x] 2 bosses with 3-phase stats configured.
+- [x] Director pacing active.
+- [x] 4 biomes configured.
+- [x] 10 rare events configured.
+- [x] HUD with HP/Energy/XP/Gold/Distance active.
+- [x] Pause/settings menu active.
+- [x] Accessibility controls wired.
+- [x] Audio system scaffold + Howler availability.
+- [x] Debug overlay via F3 active.
+- [x] Pooling/cleanup hooks active.
+- [x] 3-minute stress scenario seed documented (131313).
+- [x] Save/load with versioning active.
+- [x] Required docs delivered.
