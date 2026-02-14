@@ -8,6 +8,8 @@ import EconomySystem from '../systems/EconomySystem.js';
 import LootSystem from '../systems/LootSystem.js';
 import TalentSystem, { TALENTS } from '../systems/TalentSystem.js';
 import DebugOverlay from '../debug/DebugOverlay.js';
+import BackgroundSystem from '../systems/BackgroundSystem.js';
+import eventBus from '../core/EventBus.js';
 import { GAME_HEIGHT } from '../core/Constants.js';
 
 export default class GameScene extends Phaser.Scene {
@@ -37,6 +39,7 @@ export default class GameScene extends Phaser.Scene {
         // Systems
         this.inputSystem = new InputSystem(this);
         this.cameraSystem = new CameraSystem(this);
+        this.backgroundSystem = new BackgroundSystem(this); // New
         this.combatSystem = new CombatSystem(this);
         this.chunkSystem = new ProceduralChunkSystem(this);
         this.progressionSystem = new ProgressionSystem(this, this.player);
@@ -86,7 +89,7 @@ export default class GameScene extends Phaser.Scene {
         this.debugOverlay = new DebugOverlay(this);
 
         // Listen for Shop
-        this.scene.events.on('open-shop', () => {
+        eventBus.on('open-shop', () => {
             this.scene.pause('GameScene');
             this.scene.launch('ShopScene');
         });
@@ -106,6 +109,7 @@ export default class GameScene extends Phaser.Scene {
         }
 
         this.cameraSystem.update();
+        this.backgroundSystem.update();
         this.debugOverlay.update();
 
         // Kill plane
