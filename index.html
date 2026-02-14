@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Shard Runner</title>
+    <link rel="stylesheet" href="./styles/main.css" />
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
+  </head>
+  <body>
+    <div id="menu-root" class="panel hidden">
+      <h2>Shard Runner</h2>
+      <button data-action="continue">Continue</button>
+      <button data-action="restart">Restart Run</button>
+      <label>Master <input id="audio-master" type="range" min="0" max="1" step="0.05" value="0.8"></label>
+      <label>Music <input id="audio-music" type="range" min="0" max="1" step="0.05" value="0.6"></label>
+      <label>SFX <input id="audio-sfx" type="range" min="0" max="1" step="0.05" value="0.8"></label>
+      <label>Shake <input id="shake" type="range" min="0" max="100" step="5" value="60"></label>
+      <label>Font Size
+        <select id="font-size"><option value="1">100%</option><option value="1.25">125%</option><option value="1.5">150%</option></select>
+      </label>
+      <label><input id="high-contrast" type="checkbox"> High Contrast</label>
+      <label><input id="reduced-flash" type="checkbox"> Reduced Flashes</label>
+    </div>
+    <div id="game-root"></div>
+    <script type="module" src="./src/core/Game.js"></script>
+  </body>
+</html>

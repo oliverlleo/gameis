@@ -1,0 +1,14 @@
+# QA Checklist
+- [x] Run local static server and open game loop.
+- [x] Infinite chunk generation with deterministic seed 133742.
+- [x] Camera follow smoothing active.
+- [x] Coyote time and jump buffer validated with test seed 909001.
+- [x] Projectile/fast object anti-tunneling policy configured.
+- [x] Safe respawn when falling below world Y.
+- [x] Combo 3 light + 1 heavy operational.
+- [x] 5 skills with costs/cooldowns operational.
+- [x] XP/level and economy loop active.
+- [x] Save/load LocalStorage schema v2.
+- [x] Debug overlay (F3) shows fps/entities/chunks/memory.
+- [x] Off-screen cleanup active for enemies and loot.
+- [x] Stress scenario 3 minutes executed without crash (manual run).
