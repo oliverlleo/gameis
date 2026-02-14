@@ -1,11 +1,16 @@
 # Architecture
-Arcade Physics was chosen for deterministic platforming and lightweight collision at 60 FPS without a build pipeline.
+Arcade Physics foi mantido por simplicidade, performance e determinismo no controle de plataforma com 60 FPS estáveis sem pipeline de build.
 
-## Visual Guide
-- Biome palettes: Sunken Ruins (#1f2f46/#38567a/#9bc7d4), Night Forest (#102114/#274d2c/#7bc47f), Ember Forge (#36120d/#7a2a1f/#f07d3c), Ethereal Cliffs (#20203d/#5555aa/#b5bdff).
-- Multi-layer parallax speeds configured per biome.
-- Silhouette readability: player cyan, enemies red, elites purple, bosses orange.
-- Fake rim light via top highlight particles and low-opacity fake shadow ellipses.
+## Estrutura de jogo
+- `MainScene` orquestra os sistemas: geração procedural, spawn, combate, skills, progressão, talentos, validação, UI, save e performance.
+- Entidades são Phaser GameObjects com física Arcade aplicada (`scene.physics.add.existing`), evitando dependência de spritesheet para ser jogável localmente.
+- Mundo infinito em chunks de 2048px com seed determinística salva em LocalStorage.
 
-## Systems
-Core loop orchestrated by MainScene with modular systems for chunks, spawning, combat, skills, progression, save, UI, performance, and director pacing.
+## Direção visual
+- 4 biomas com paleta própria: Sunken Ruins, Night Forest, Ember Forge, Ethereal Cliffs.
+- Camadas de fundo por chunk (BG + mid-layer + plataformas) para legibilidade de profundidade.
+- Cores semânticas: jogador azul, inimigos normais vermelho/laranja, suporte roxo, assassino magenta, bosses destacados.
+
+## Loop principal
+- Avanço horizontal -> spawn contextual por distância -> combate corpo a corpo/skills -> ouro/XP -> level up/talentos -> bosses por milestones de distância.
+- Director regula intensidade e dispara eventos raros para alternar ritmo (respiro/pico).
