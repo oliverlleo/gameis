@@ -8,45 +8,45 @@ export const COMBAT_CONFIG = {
     },
     // Skills
     skills: {
-        ascendingRupture: {
-            id: 'ascendingRupture',
-            damage: 20,
-            cost: 25,
-            cooldown: 6500,
+        ascendingRupture: { 
+            id: 'ascendingRupture', 
+            damage: 20, 
+            cost: 25, 
+            cooldown: 6500, 
             type: 'physical',
-            launchForce: -600
+            launchForce: -600 
         },
-        shadowStep: {
-            id: 'shadowStep',
-            damage: 0,
-            cost: 20,
-            cooldown: 5000,
-            duration: 300,
-            distance: 200
+        shadowStep: { 
+            id: 'shadowStep', 
+            damage: 0, 
+            cost: 20, 
+            cooldown: 5000, 
+            duration: 300, 
+            distance: 200 
         },
-        flowBlade: {
-            id: 'flowBlade',
-            damage: 8,
-            hits: 4,
-            cost: 30,
-            cooldown: 8000,
-            type: 'physical'
+        flowBlade: { 
+            id: 'flowBlade', 
+            damage: 8, 
+            hits: 4, 
+            cost: 30, 
+            cooldown: 8000, 
+            type: 'physical' 
         },
-        freezingPrism: {
-            id: 'freezingPrism',
-            damage: 15,
-            cost: 35,
-            cooldown: 11000,
+        freezingPrism: { 
+            id: 'freezingPrism', 
+            damage: 15, 
+            cost: 35, 
+            cooldown: 11000, 
             type: 'ice',
-            freezeDuration: 2000
+            freezeDuration: 2000 
         },
-        overloadCore: {
-            id: 'overloadCore',
-            damage: 80,
-            cost: 50,
-            cooldown: 16000,
+        overloadCore: { 
+            id: 'overloadCore', 
+            damage: 80, 
+            cost: 50, 
+            cooldown: 16000, 
             type: 'lightning',
-            radius: 150
+            radius: 150 
         }
     },
     // Status Effects
@@ -55,5 +55,14 @@ export const COMBAT_CONFIG = {
         freeze: { slow: 0.5, duration: 3000 },
         shock: { damageAmp: 1.2, duration: 4000 },
         bleed: { damage: 3, interval: 500, duration: 4000, stackable: true }
+    },
+    // Global Combat Settings
+    hitstop: {
+        light: 35,
+        heavy: 85
+    },
+    knockback: {
+        player: { x: 200, y: -200 },
+        enemy: { x: 300, y: -100 }
     }
 };

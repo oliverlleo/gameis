@@ -14,7 +14,7 @@ export default class EnemyAssassin extends EnemyBase {
     update(time, delta) {
         if (!this.active) return;
         super.update(time, delta);
-
+        
         if (time - this.lastTeleportTime > this.teleportCooldown) {
             this.attemptTeleport(time);
         }
@@ -26,7 +26,7 @@ export default class EnemyAssassin extends EnemyBase {
             // Teleport behind player
             const dir = this.target.facingRight ? -1 : 1;
             const targetX = this.target.sprite.x + (dir * 50);
-
+            
             // Fade out
             this.scene.tweens.add({
                 targets: this.sprite,

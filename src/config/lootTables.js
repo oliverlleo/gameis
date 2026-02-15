@@ -5,7 +5,7 @@ export const LOOT_TABLES = [
     { id: 'sword_steel', name: 'Steel Sword', type: 'weapon', rarity: 'rare', damage: 8 },
     { id: 'sword_mythril', name: 'Mythril Blade', type: 'weapon', rarity: 'epic', damage: 12 },
     { id: 'sword_dragon', name: 'Dragon Slayer', type: 'weapon', rarity: 'legendary', damage: 20 },
-
+    
     // Armor
     { id: 'armor_leather', name: 'Leather Vest', type: 'armor', rarity: 'common', hp: 10 },
     { id: 'armor_chain', name: 'Chainmail', type: 'armor', rarity: 'uncommon', hp: 20 },
@@ -32,12 +32,12 @@ export const LOOT_TABLES = [
     { id: 'gem_sapphire', name: 'Sapphire', type: 'material', rarity: 'uncommon', value: 20 },
     { id: 'gem_emerald', name: 'Emerald', type: 'material', rarity: 'rare', value: 50 },
     { id: 'gem_diamond', name: 'Diamond', type: 'material', rarity: 'epic', value: 100 },
-
+    
     // Skill Runes?
     { id: 'rune_fire', name: 'Fire Rune', type: 'rune', rarity: 'rare', status: 'burn' },
     { id: 'rune_ice', name: 'Ice Rune', type: 'rune', rarity: 'rare', status: 'freeze' },
     { id: 'rune_shock', name: 'Shock Rune', type: 'rune', rarity: 'epic', status: 'shock' },
-
+    
     // Boss Drops
     { id: 'soul_boss_a', name: 'Soul of the Guardian', type: 'artifact', rarity: 'legendary', statMult: 1.1 },
     { id: 'soul_boss_b', name: 'Soul of the Ethereal', type: 'artifact', rarity: 'legendary', cooldownReduc: 0.1 }

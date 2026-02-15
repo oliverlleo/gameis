@@ -11,16 +11,16 @@ export default class EnemyShield extends EnemyBase {
     takeDamage(amount, source) {
         if (source && source.sprite) {
             // Check direction
-            const isFront = (source.sprite.x > this.sprite.x && !this.sprite.flipX) ||
+            const isFront = (source.sprite.x > this.sprite.x && !this.sprite.flipX) || 
                             (source.sprite.x < this.sprite.x && this.sprite.flipX);
-
+            
             if (isFront) {
                 // Block
                 amount = 0;
                 this.sprite.setTint(0x0000ff); // Flash blue
                 this.scene.time.delayedCall(100, () => this.sprite.clearTint());
                 // Maybe play block sound
-                return;
+                return; 
             }
         }
         super.takeDamage(amount, source);

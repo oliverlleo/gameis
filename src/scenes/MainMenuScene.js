@@ -9,15 +9,15 @@ export default class MainMenuScene extends Phaser.Scene {
 
     create() {
         this.cameras.main.setBackgroundColor('#000000');
-
+        
         // Title
         this.add.text(GAME_WIDTH/2, GAME_HEIGHT/4, 'INFINITE HORIZON', { fontSize: '64px', fill: '#00ffff', stroke: '#ffffff', strokeThickness: 2 }).setOrigin(0.5);
 
         // Buttons
         let startY = GAME_HEIGHT/2;
-
+        
         const saveExists = this.saveSystem.load() !== null;
-
+        
         if (saveExists) {
             this.createButton(GAME_WIDTH/2, startY, 'CONTINUE', () => {
                 const data = this.saveSystem.load();
@@ -30,7 +30,7 @@ export default class MainMenuScene extends Phaser.Scene {
             this.saveSystem.clear();
             this.scene.start('GameScene', { loadData: null });
         });
-
+        
         startY += 80;
         this.createButton(GAME_WIDTH/2, startY, 'SETTINGS', () => {
             console.log('Settings TODO');

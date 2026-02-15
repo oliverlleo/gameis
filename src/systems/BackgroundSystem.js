@@ -4,7 +4,7 @@ export default class BackgroundSystem {
     constructor(scene) {
         this.scene = scene;
         this.layers = [];
-
+        
         // Use external images if loaded, otherwise generate
         this.createLayers();
     }
@@ -40,7 +40,7 @@ export default class BackgroundSystem {
                 .setScrollFactor(0)
                 .setDepth(-5)
                 .setAlpha(0.6);
-
+            
             this.layers.push({ sprite: nebula, speed: 0.1 });
         } else {
             // Procedural Stars
@@ -55,14 +55,14 @@ export default class BackgroundSystem {
                 .setScrollFactor(0)
                 .setDepth(-5);
             g.destroy();
-
+            
             this.layers.push({ sprite: stars, speed: 0.05 });
         }
     }
 
     update() {
         const camX = this.scene.cameras.main.scrollX;
-
+        
         this.layers.forEach(layer => {
             layer.sprite.tilePositionX = camX * layer.speed;
         });

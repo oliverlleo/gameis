@@ -2,7 +2,7 @@ export default class InputSystem {
     constructor(scene) {
         this.scene = scene;
         this.cursors = scene.input.keyboard.createCursorKeys();
-
+        
         // Custom keys
         this.keys = scene.input.keyboard.addKeys({
             w: Phaser.Input.Keyboard.KeyCodes.W,
@@ -41,7 +41,7 @@ export default class InputSystem {
         const right = this.cursors.right.isDown || this.keys.d.isDown;
         const up = this.cursors.up.isDown || this.keys.w.isDown;
         const down = this.cursors.down.isDown || this.keys.s.isDown;
-
+        
         const jumpPressed = Phaser.Input.Keyboard.JustDown(this.keys.space) || Phaser.Input.Keyboard.JustDown(this.keys.jump) || Phaser.Input.Keyboard.JustDown(this.cursors.up) || Phaser.Input.Keyboard.JustDown(this.keys.w);
         const jumpHeld = this.keys.space.isDown || this.keys.jump.isDown || this.cursors.up.isDown || this.keys.w.isDown;
 

@@ -4,7 +4,7 @@ export default class EconomySystem {
     constructor(scene) {
         this.scene = scene;
         this.gold = 0;
-
+        
         eventBus.on('gold-gained', this.addGold, this);
         eventBus.on('item-bought', this.spendGold, this);
     }

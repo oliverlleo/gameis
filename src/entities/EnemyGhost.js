@@ -13,11 +13,11 @@ export default class EnemyGhost extends EnemyBase {
         // Fly towards player directly
         const dx = this.target.sprite.x - this.sprite.x;
         const dy = this.target.sprite.y - this.sprite.y;
-
+        
         const angle = Math.atan2(dy, dx);
         this.sprite.setVelocityX(Math.cos(angle) * this.moveSpeed);
         this.sprite.setVelocityY(Math.sin(angle) * this.moveSpeed);
-
+        
         this.sprite.setFlipX(dx < 0);
     }
 }

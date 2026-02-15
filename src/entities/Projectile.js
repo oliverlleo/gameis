@@ -4,15 +4,22 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
     }
 
     fire(targetX, targetY, speed) {
+        this.setActive(true).setVisible(true);
+        this.body.enable = true;
+        
         this.scene.physics.moveTo(this, targetX, targetY, speed);
         this.rotation = Phaser.Math.Angle.Between(this.x, this.y, targetX, targetY);
-        // Auto destroy
+        
+        // Auto recycle
         this.scene.time.delayedCall(2000, () => {
-            if (this.active) this.destroy();
+            if (this.active) {
+                this.setActive(false).setVisible(false);
+                this.body.enable = false;
+            }
         });
     }
 
     update(time, delta) {
-        // Custom logic if needed
+        if (!this.active) return;
     }
 }

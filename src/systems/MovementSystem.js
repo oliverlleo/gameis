@@ -5,7 +5,7 @@ export default class MovementSystem {
 
     moveTowards(body, targetX, speed) {
         if (!body) return;
-
+        
         if (body.x < targetX - 10) { // Deadzone
             body.setVelocityX(speed);
             if (body.gameObject) body.gameObject.setFlipX(false); // Face Right

@@ -9,7 +9,7 @@ export default class BootScene extends Phaser.Scene {
 
     preload() {
         console.log('BootScene: Loading external assets...');
-
+        
         // Ensure cross-origin loading works
         this.load.crossOrigin = 'anonymous';
 
@@ -43,13 +43,13 @@ export default class BootScene extends Phaser.Scene {
         // Always generate procedural-only assets (VFX, UI)
         generator.generateVFX();
         generator.generateUI();
-
+        
         // Extra generation for assets not in URL list (e.g. enemy variants sharing textures)
         // enemy_support, enemy_assassin, etc. might re-use textures or need generation
         // For now, AssetGenerator handles them if they are not in ASSET_URLS
         // But AssetGenerator.generateEnemies() generated everything.
         // We should split AssetGenerator to be granular.
-
+        
         // Let's ensure ALL enemies have textures.
         // If 'enemy_support' is not in ASSET_URLS, we must generate it.
         const extraEnemies = ['enemy_support', 'enemy_assassin', 'enemy_exploder', 'enemy_shield', 'enemy_ghost'];

@@ -9,21 +9,22 @@ export default class EnemyRanged extends EnemyBase {
         this.attackRange = 400;
         this.fleeRange = 150;
         this.attackCooldown = 3000;
-
+        
         this.projectiles = scene.physics.add.group({ classType: Projectile, runChildUpdate: true });
-
+        
         // Add overlap for projectiles against player
-        scene.physics.add.overlap(this.projectiles, scene.player.sprite, (playerSprite, projectile) => {
+        // Parameters: (object1, object2) -> (projectile, playerSprite)
+        scene.physics.add.overlap(this.projectiles, scene.player.sprite, (projectile, playerSprite) => {
             if (projectile.active) {
                 scene.player.takeDamage(this.stats.damage);
-                projectile.destroy();
+                projectile.setActive(false).setVisible(false);
             }
         });
     }
 
     handleState(time, delta) {
         const dist = Phaser.Math.Distance.Between(this.sprite.x, this.sprite.y, this.target.sprite.x, this.target.sprite.y);
-
+        
         if (dist < this.fleeRange) {
             this.state = 'FLEE';
         } else if (dist < this.attackRange && time - this.lastAttackTime > this.attackCooldown) {

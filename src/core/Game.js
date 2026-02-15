@@ -4,6 +4,7 @@ import GameScene from '../scenes/GameScene.js';
 import UIScene from '../scenes/UIScene.js';
 import GameOverScene from '../scenes/GameOverScene.js';
 import ShopScene from '../scenes/ShopScene.js';
+import SettingsScene from '../scenes/SettingsScene.js';
 import { GAME_WIDTH, GAME_HEIGHT, GRAVITY } from './Constants.js';
 
 // Game Configuration
@@ -27,7 +28,8 @@ const config = {
         GameScene,
         UIScene,
         GameOverScene,
-        ShopScene
+        ShopScene,
+        SettingsScene
     ],
     fps: {
         target: 60,

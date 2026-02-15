@@ -15,11 +15,11 @@ export default class EnemyBat extends EnemyBase {
         const time = this.scene.time.now * 0.005;
         const dx = this.target.sprite.x - this.sprite.x;
         const dy = (this.target.sprite.y - 50) - this.sprite.y + Math.sin(time) * 50; // Bobbing
-
+        
         const angle = Math.atan2(dy, dx);
         this.sprite.setVelocityX(Math.cos(angle) * this.moveSpeed);
         this.sprite.setVelocityY(Math.sin(angle) * this.moveSpeed);
-
+        
         this.sprite.setFlipX(dx < 0);
     }
 }

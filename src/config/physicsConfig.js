@@ -12,10 +12,4 @@ export const PHYSICS_CONFIG = {
     fallMultiplier: 1.85, // Extra gravity when falling
     maxFallSpeed: 1200, // px/s
     iframeDuration: 350, // ms
-    hitstopLight: 35, // ms
-    hitstopHeavy: 85, // ms
-    knockback: {
-        player: { x: 200, y: -200 },
-        enemy: { x: 300, y: -100 }
-    }
 };

@@ -9,7 +9,7 @@ export default class AISystem {
         // Simple token system
         // Reset tokens every frame? No, tokens should be held for duration of attack.
         // But since I don't have complex messaging, I'll just check state.
-
+        
         const enemies = this.scene.getEnemies(); // Assuming GameScene exposes this
         if (!enemies) return;
 
@@ -21,7 +21,7 @@ export default class AISystem {
         enemies.forEach(e => {
             if (e.state === 'CHASE' && attacking < this.maxAttackers) {
                 // Allowed to attack
-                e.canAttack = true;
+                e.canAttack = true; 
             } else if (e.state === 'CHASE') {
                 e.canAttack = false; // Must wait
                 // Maybe switch to 'CIRCLE' state?

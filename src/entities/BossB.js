@@ -9,19 +9,19 @@ export default class BossB extends EnemyBase {
         this.stats = { hp: 3000, maxHp: 3000, damage: 35, xpReward: 1000 };
         this.sprite.body.setSize(96, 96);
         this.sprite.body.setAllowGravity(false); // Floating
-
+        
         this.phase = 1;
         this.teleportCooldown = 3000;
         this.laserCooldown = 2000;
-
+        
         this.projectiles = scene.physics.add.group({ classType: Projectile });
     }
 
     update(time, delta) {
         super.update(time, delta);
-
+        
         const hpPercent = this.stats.hp / this.stats.maxHp;
-
+        
         if (this.phase === 1 && hpPercent < 0.7) {
             this.startPhase2();
         } else if (this.phase === 2 && hpPercent < 0.35) {
@@ -59,7 +59,7 @@ export default class BossB extends EnemyBase {
         const targetX = this.target.sprite.x + (Math.random() > 0.5 ? 200 : -200);
         this.sprite.x = targetX;
         this.sprite.y = this.target.sprite.y - 100;
-
+        
         // Shoot Laser
         this.shootLaser();
     }

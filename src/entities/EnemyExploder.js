@@ -13,7 +13,7 @@ export default class EnemyExploder extends EnemyBase {
     update(time, delta) {
         super.update(time, delta);
         const dist = Phaser.Math.Distance.Between(this.sprite.x, this.sprite.y, this.target.sprite.x, this.target.sprite.y);
-
+        
         if (dist < this.explodeRange) {
             this.explode();
         }
@@ -22,13 +22,13 @@ export default class EnemyExploder extends EnemyBase {
     explode() {
         if (!this.active) return;
         eventBus.emit('explosion', { x: this.sprite.x, y: this.sprite.y });
-
+        
         // AOE Damage
         const dist = Phaser.Math.Distance.Between(this.sprite.x, this.sprite.y, this.target.sprite.x, this.target.sprite.y);
         if (dist < 100) {
             this.target.takeDamage(this.stats.damage);
         }
-
+        
         // VFX
         const circle = this.scene.add.circle(this.sprite.x, this.sprite.y, 100, 0xff5500, 0.5);
         this.scene.tweens.add({
@@ -38,7 +38,7 @@ export default class EnemyExploder extends EnemyBase {
             duration: 300,
             onComplete: () => circle.destroy()
         });
-
+        
         this.die();
     }
 }

@@ -34,20 +34,26 @@ export default class SpawnSystem {
         if (!biome) return;
 
         // Density based on difficulty
-        const density = 0.002 * (1 + difficulty * 0.2);
-
+        const density = 0.002 * (1 + difficulty * 0.2); 
+        
         platforms.forEach(platform => {
-            if (Math.random() < density * platform.width) {
+            if (platform.width > 100 && Math.random() < density * platform.width) {
+                // Determine Enemy Type
                 const enemyType = Phaser.Math.RND.pick(biome.enemies);
                 const EnemyClass = this.spawnMap[enemyType];
+                
                 if (EnemyClass) {
-                    const x = platform.x + Math.random() * platform.width;
+                    const x = platform.x + Math.random() * (platform.width - 50);
                     const y = platform.y - 50;
-                    const enemy = new EnemyClass(this.scene, x, y);
+                    
+                    // Avoid spawning directly on player spawn (first chunk)
+                    if (chunkX === 0 && x < 400) return;
 
+                    const enemy = new EnemyClass(this.scene, x, y);
+                    
                     // Add to group
                     this.scene.enemiesGroup.add(enemy.sprite);
-
+                    
                     // Elite chance
                     if (Math.random() < 0.05 * difficulty) {
                         this.makeElite(enemy);
@@ -56,7 +62,7 @@ export default class SpawnSystem {
             }
         });
     }
-
+    
     makeElite(enemy) {
         enemy.sprite.setScale(enemy.sprite.scaleX * 1.2);
         enemy.stats.hp *= 2;
@@ -67,7 +73,6 @@ export default class SpawnSystem {
     }
 
     spawnBoss(x, y, level) {
-        // Toggle boss based on level/distance
         const BossClass = (level % 2 !== 0) ? BossA : BossB;
         const boss = new BossClass(this.scene, x, y);
         this.scene.enemiesGroup.add(boss.sprite);

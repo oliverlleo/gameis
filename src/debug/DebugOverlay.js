@@ -5,7 +5,7 @@ export default class DebugOverlay {
         this.text = scene.add.text(10, 100, '', { font: '12px monospace', fill: '#00ff00', backgroundColor: '#000000' });
         this.text.setScrollFactor(0);
         this.text.setDepth(1000);
-
+        
         scene.input.keyboard.on('keydown-F3', () => {
             this.visible = !this.visible;
             this.text.setVisible(this.visible);
@@ -20,7 +20,7 @@ export default class DebugOverlay {
         const player = this.scene.player;
         const enemies = this.scene.enemiesGroup ? this.scene.enemiesGroup.getLength() : 0;
         const chunks = this.scene.chunkSystem ? this.scene.chunkSystem.activeChunks.length : 0;
-
+        
         this.text.setText([
             `FPS: ${fps.toFixed(2)}`,
             `Player X: ${Math.floor(player.sprite.x)} Y: ${Math.floor(player.sprite.y)}`,

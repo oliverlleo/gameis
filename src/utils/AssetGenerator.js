@@ -20,27 +20,27 @@ export default class AssetGenerator {
         const w = 32;
         const h = 48;
         const g = this.createGraphics(w, h);
-
+        
         // Body (Blue)
         g.fillStyle(0x3366cc);
         g.fillRect(8, 16, 16, 24);
-
+        
         // Head (Flesh)
         g.fillStyle(0xffccaa);
         g.fillRect(10, 4, 12, 12);
-
+        
         // Face Detail (Eyes)
         g.fillStyle(0x222222);
         g.fillRect(12, 8, 2, 2);
         g.fillRect(18, 8, 2, 2);
-
+        
         // Legs (Dark Grey)
         g.fillStyle(0x222222);
         if (key.includes('run')) {
-             g.fillRect(4, 38, 8, 8);
+             g.fillRect(4, 38, 8, 8); 
              g.fillRect(20, 38, 8, 8);
         } else if (key.includes('jump')) {
-             g.fillRect(6, 36, 8, 8);
+             g.fillRect(6, 36, 8, 8); 
              g.fillRect(18, 32, 8, 8);
         } else { // Idle
              g.fillRect(8, 40, 6, 8);
@@ -52,7 +52,7 @@ export default class AssetGenerator {
             g.fillStyle(0xdddddd);
             g.fillRect(24, 20, 30, 6);
         }
-
+        
         g.generateTexture(key, 64, h); // Wider for sword
         g.destroy();
     }
@@ -60,12 +60,12 @@ export default class AssetGenerator {
     generateEnemy(key) {
         const size = 32;
         const g = this.createGraphics(size, size);
-
+        
         if (key.includes('melee')) {
             // Square Red
             g.fillStyle(0xcc3333);
             g.fillRect(4, 8, 24, 24);
-            g.fillStyle(0x000000);
+            g.fillStyle(0x000000); 
             g.fillRect(8, 12, 4, 4);
             g.fillRect(20, 12, 4, 4);
         } else if (key.includes('ranged')) {
@@ -103,17 +103,17 @@ export default class AssetGenerator {
             g.fillStyle(0xffffff);
             g.fillRect(8, 8, 16, 16);
         }
-
+        
         g.generateTexture(key, size, size);
         g.destroy();
     }
-
+    
     generateBoss(key) {
         const size = 128;
         const g = this.createGraphics(size, size);
         g.fillStyle(0x9933cc);
         g.fillRect(16, 16, 96, 96);
-        g.fillStyle(0xff0000);
+        g.fillStyle(0xff0000); 
         g.fillRect(32, 32, 16, 16);
         g.fillRect(80, 32, 16, 16);
         g.lineStyle(4, 0x000000);
