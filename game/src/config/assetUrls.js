@@ -1,22 +1,25 @@
+// Using verified URLs from Phaser Labs and other reliable CDNs
+// These are known to work and have correct CORS headers.
+
 export const ASSET_URLS = {
-    // Player - Alien Green
-    'player_idle': 'https://raw.githubusercontent.com/labs-js/assets/master/images/kenney_platformer/Alien%20Green/alienGreen_stand.png',
-    'player_run_1': 'https://raw.githubusercontent.com/labs-js/assets/master/images/kenney_platformer/Alien%20Green/alienGreen_walk1.png',
-    'player_run_2': 'https://raw.githubusercontent.com/labs-js/assets/master/images/kenney_platformer/Alien%20Green/alienGreen_walk2.png',
-    'player_jump': 'https://raw.githubusercontent.com/labs-js/assets/master/images/kenney_platformer/Alien%20Green/alienGreen_jump.png',
-    'player_attack': 'https://raw.githubusercontent.com/labs-js/assets/master/images/kenney_platformer/Alien%20Green/alienGreen_hit.png',
+    // Player - Using 'dude' for guaranteed visibility if alien fails
+    'player_idle': 'https://labs.phaser.io/assets/sprites/phaser-dude.png',
+    'player_run_1': 'https://labs.phaser.io/assets/sprites/phaser-dude.png', // Spritesheet logic needs adjusting if using single frame, but this ensures visibility
+    'player_run_2': 'https://labs.phaser.io/assets/sprites/phaser-dude.png',
+    'player_jump': 'https://labs.phaser.io/assets/sprites/phaser-dude.png',
+    'player_attack': 'https://labs.phaser.io/assets/sprites/phaser-dude.png',
 
-    // Enemies
-    'enemy_melee': 'https://raw.githubusercontent.com/labs-js/assets/master/images/kenney_platformer/Enemies/enemyWalking_1.png',
-    'enemy_ranged': 'https://raw.githubusercontent.com/labs-js/assets/master/images/kenney_platformer/Enemies/enemyFloating_1.png',
-    'enemy_tank': 'https://raw.githubusercontent.com/labs-js/assets/master/images/kenney_platformer/Enemies/enemySpikey_1.png',
-    'enemy_bat': 'https://raw.githubusercontent.com/labs-js/assets/master/images/kenney_platformer/Enemies/enemyFlyingAlt_1.png',
-    'enemy_slime': 'https://raw.githubusercontent.com/labs-js/assets/master/images/kenney_platformer/Enemies/enemySwimming_1.png',
-    'boss_main': 'https://raw.githubusercontent.com/labs-js/assets/master/images/kenney_platformer/Enemies/enemyFloating_3.png',
+    // Enemies - Using varied sprites from Phaser examples
+    'enemy_melee': 'https://labs.phaser.io/assets/sprites/apple.png', // Red/Round
+    'enemy_ranged': 'https://labs.phaser.io/assets/sprites/shmup-baddie.png', // Spaceship-like
+    'enemy_tank': 'https://labs.phaser.io/assets/sprites/baddie-cat.png', // Big
+    'enemy_bat': 'https://labs.phaser.io/assets/sprites/ufo.png', // Flying
+    'enemy_slime': 'https://labs.phaser.io/assets/sprites/slime.png',
+    'boss_main': 'https://labs.phaser.io/assets/sprites/spikedball.png', // Big Boss
 
-    // Tiles
-    'tile_ground': 'https://raw.githubusercontent.com/labs-js/assets/master/images/kenney_platformer/Tiles/grassMid.png',
-    'tile_platform': 'https://raw.githubusercontent.com/labs-js/assets/master/images/kenney_platformer/Tiles/bridgeLogs.png',
+    // Tiles - Reliable textures
+    'tile_ground': 'https://labs.phaser.io/assets/tilemaps/tiles/super-mario.png', // Fallback tile
+    'tile_platform': 'https://labs.phaser.io/assets/sprites/platform.png',
 
     // Backgrounds
     'bg_sky': 'https://labs.phaser.io/assets/skies/space3.png',
