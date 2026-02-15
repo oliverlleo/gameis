@@ -55,5 +55,14 @@ export const COMBAT_CONFIG = {
         freeze: { slow: 0.5, duration: 3000 },
         shock: { damageAmp: 1.2, duration: 4000 },
         bleed: { damage: 3, interval: 500, duration: 4000, stackable: true }
+    },
+    // Global Combat Settings
+    hitstop: {
+        light: 35,
+        heavy: 85
+    },
+    knockback: {
+        player: { x: 200, y: -200 },
+        enemy: { x: 300, y: -100 }
     }
 };

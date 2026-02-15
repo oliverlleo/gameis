@@ -14,31 +14,29 @@ export default class StatusSystem {
 
         const duration = durationOverride || config.duration;
 
-        // Check if exists
+        // Refresh or Add
         const existing = target.statusEffects.find(e => e.type === type);
         if (existing) {
-            existing.duration = duration; // Refresh
+            existing.duration = duration;
             if (config.stackable) existing.stacks = (existing.stacks || 1) + 1;
         } else {
             target.statusEffects.push({
                 type: type,
                 duration: duration,
-                timer: 0,
                 tickTimer: 0,
                 stacks: 1,
                 config: config
             });
 
-            // Initial effect (e.g. slow)
+            // Initial
             if (type === 'freeze') {
-                if (target.body) target.body.velocity.x *= config.slow; // Instant slow? No, modify movement logic
-                // Better: Set a flag on target "isFrozen" or "moveSpeedMultiplier"
                 target.speedMultiplier = config.slow;
+                if (target.sprite) target.sprite.setTint(0x00ffff);
+            }
+            if (type === 'burn') {
+                if (target.sprite) target.sprite.setTint(0xff0000);
             }
         }
-
-        // Visual feedback
-        this.createStatusVFX(target, type);
     }
 
     update(target, delta) {
@@ -49,15 +47,20 @@ export default class StatusSystem {
             effect.duration -= delta;
             effect.tickTimer += delta;
 
-            // Handle DoT
+            // DoT Logic
             if (effect.config.interval && effect.tickTimer >= effect.config.interval) {
                 effect.tickTimer = 0;
                 const damage = effect.config.damage * effect.stacks;
-                eventBus.emit('damage-event', { target: target, amount: damage, type: effect.type, isDoT: true });
+
+                // Apply Damage via CombatSystem? Or direct?
+                // Direct for now to avoid loops, but should use pipeline.
+                // We don't have attacker ref here easily.
+                if (target.takeDamage) target.takeDamage(damage);
+
+                // Visual
                 this.createDamageNumber(target, damage, effect.type);
             }
 
-            // Remove expired
             if (effect.duration <= 0) {
                 this.removeStatus(target, effect);
                 target.statusEffects.splice(i, 1);
@@ -69,31 +72,19 @@ export default class StatusSystem {
         if (effect.type === 'freeze') {
             target.speedMultiplier = 1.0;
         }
-    }
-
-    createStatusVFX(target, type) {
-        // Simple particle or tint
-        if (type === 'burn') target.sprite.setTint(0xff0000);
-        if (type === 'freeze') target.sprite.setTint(0x00ffff);
-        if (type === 'shock') target.sprite.setTint(0xffff00);
-
-        // Reset tint after a bit? No, tint persists with status.
-        // Status removal should clear tint.
-        // But multiple statuses?
-        // Let's just tint for the last applied for now.
+        if (target.sprite) target.sprite.clearTint();
     }
 
     createDamageNumber(target, amount, type) {
-        // Text popup
         const x = target.sprite.x;
         const y = target.sprite.y - 30;
         const color = type === 'burn' ? '#ff0000' : '#ffffff';
-        const text = this.scene.add.text(x, y, `-${amount}`, { fontSize: '16px', fill: color, stroke: '#000', strokeThickness: 2 });
+        const text = this.scene.add.text(x, y, `-${amount}`, { fontSize: '12px', fill: color });
         this.scene.tweens.add({
             targets: text,
-            y: y - 30,
+            y: y - 20,
             alpha: 0,
-            duration: 800,
+            duration: 500,
             onComplete: () => text.destroy()
         });
     }

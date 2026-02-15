@@ -1,5 +1,7 @@
 import { COMBAT_CONFIG } from '../config/combatConfig.js';
 import eventBus from '../core/EventBus.js';
+import BossA from '../entities/BossA.js';
+import BossB from '../entities/BossB.js';
 
 export default class DirectorSystem {
     constructor(scene) {
@@ -8,17 +10,51 @@ export default class DirectorSystem {
         this.timer = 0;
         this.eventTimer = 0;
         this.eventInterval = 30000; // Check event every 30s
+
+        // Milestones
+        this.milestones = [
+            { dist: 2500, type: 'boss_a', completed: false },
+            { dist: 6000, type: 'boss_b', completed: false }
+        ];
     }
 
     update(time, delta) {
         this.timer += delta;
         this.difficulty = 1 + (this.timer / 60000);
 
+        // Event Spawning
         this.eventTimer += delta;
         if (this.eventTimer > this.eventInterval) {
             this.eventTimer = 0;
             this.trySpawnEvent();
         }
+
+        // Milestones
+        const playerX = this.scene.player.sprite.x;
+        this.milestones.forEach(m => {
+            if (!m.completed && playerX > m.dist) {
+                m.completed = true;
+                this.spawnBoss(m.type, playerX + 600);
+            }
+        });
+    }
+
+    spawnBoss(type, x) {
+        // Pause chunk generation or clear area?
+        // Ideally clear local enemies
+
+        let boss;
+        const y = this.scene.game.config.height - 200;
+        if (type === 'boss_a') {
+            boss = new BossA(this.scene, x, y);
+        } else {
+            boss = new BossB(this.scene, x, y - 100);
+        }
+
+        this.scene.enemiesGroup.add(boss.sprite);
+
+        eventBus.emit('boss-spawn', { type: type });
+        // Maybe lock camera?
     }
 
     trySpawnEvent() {
@@ -35,9 +71,6 @@ export default class DirectorSystem {
         } else if (roll < 0.8) {
             // Spawn Altar
             this.spawnAltar(x, y);
-        } else {
-            // Spawn Mini-Boss or Elite Pack?
-            // Already handled by spawn system partially.
         }
     }
 

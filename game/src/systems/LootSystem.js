@@ -12,8 +12,10 @@ export default class LootSystem {
 
         // Add collider with ground
         scene.physics.add.collider(this.lootGroup, scene.groundGroup);
+
         // Add overlap with player
-        scene.physics.add.overlap(this.lootGroup, scene.player.sprite, (playerSprite, lootOrb) => {
+        // Parameters: (object1, object2) -> (playerSprite, lootOrb)
+        scene.physics.add.overlap(scene.player.sprite, this.lootGroup, (playerSprite, lootOrb) => {
             if (lootOrb.active && lootOrb.collect) lootOrb.collect();
         });
     }

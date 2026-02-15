@@ -3,9 +3,9 @@ import { PROGRESSION_CONFIG } from '../config/progressionConfig.js';
 export const TALENTS = [
     // Offensive
     { id: 'sharpness', name: 'Sharpness', desc: '+10% Damage', apply: (p) => p.stats.damage *= 1.1 },
-    { id: 'precision', name: 'Precision', desc: '+5% Crit Chance', apply: (p) => p.stats.critChance = (p.stats.critChance || 0.05) + 0.05 },
-    { id: 'brutality', name: 'Brutality', desc: '+20% Crit Damage', apply: (p) => p.stats.critMultiplier = (p.stats.critMultiplier || 1.5) + 0.2 },
-    { id: 'haste', name: 'Haste', desc: '+10% Attack Speed', apply: (p) => p.stats.attackSpeed = (p.stats.attackSpeed || 1) * 1.1 },
+    { id: 'precision', name: 'Precision', desc: '+5% Crit Chance', apply: (p) => p.stats.critChance += 0.05 },
+    { id: 'brutality', name: 'Brutality', desc: '+20% Crit Damage', apply: (p) => p.stats.critMultiplier += 0.2 },
+    { id: 'haste', name: 'Haste', desc: '+10% Attack Speed', apply: (p) => p.stats.attackSpeed *= 1.1 },
     { id: 'executioner', name: 'Executioner', desc: 'Deal +20% damage to low HP enemies', apply: (p) => p.stats.executeBonus = true },
 
     // Defensive
@@ -18,7 +18,7 @@ export const TALENTS = [
     // Utility
     { id: 'greed', name: 'Greed', desc: '+20% Gold Gain', apply: (p) => p.stats.goldMult = (p.stats.goldMult || 1) + 0.2 },
     { id: 'wisdom', name: 'Wisdom', desc: '+20% XP Gain', apply: (p) => p.stats.xpMult = (p.stats.xpMult || 1) + 0.2 },
-    { id: 'swiftness', name: 'Swiftness', desc: '+10% Move Speed', apply: (p) => p.stats.moveSpeedMult = (p.stats.moveSpeedMult || 1) + 0.1 },
+    { id: 'swiftness', name: 'Swiftness', desc: '+10% Move Speed', apply: (p) => p.stats.moveSpeedMult += 0.1 },
     { id: 'featherweight', name: 'Featherweight', desc: 'Higher Jump', apply: (p) => p.stats.jumpMult = (p.stats.jumpMult || 1) + 0.1 },
     { id: 'magnet', name: 'Magnet', desc: '+50% Pickup Range', apply: (p) => p.stats.pickupRange = (p.stats.pickupRange || 100) * 1.5 },
 
@@ -46,7 +46,6 @@ export default class TalentSystem {
         const t = TALENTS.find(t => t.id === talentId);
         if (!t) return false;
         if (t.req) {
-            // Check requirements
             return t.req.every(r => this.acquired.includes(r));
         }
         return true;

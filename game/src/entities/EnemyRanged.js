@@ -13,10 +13,11 @@ export default class EnemyRanged extends EnemyBase {
         this.projectiles = scene.physics.add.group({ classType: Projectile, runChildUpdate: true });
 
         // Add overlap for projectiles against player
-        scene.physics.add.overlap(this.projectiles, scene.player.sprite, (playerSprite, projectile) => {
+        // Parameters: (object1, object2) -> (projectile, playerSprite)
+        scene.physics.add.overlap(this.projectiles, scene.player.sprite, (projectile, playerSprite) => {
             if (projectile.active) {
                 scene.player.takeDamage(this.stats.damage);
-                projectile.destroy();
+                projectile.setActive(false).setVisible(false);
             }
         });
     }

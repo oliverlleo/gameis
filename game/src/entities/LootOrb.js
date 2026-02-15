@@ -20,12 +20,18 @@ export default class LootOrb extends Phaser.Physics.Arcade.Sprite {
         this.collected = false;
     }
 
-    update(time, delta, player) {
+    update(time, delta) {
         if (this.collected) return;
+
+        const player = this.scene.player;
+        if (!player || !player.sprite) return;
 
         const dist = Phaser.Math.Distance.Between(this.x, this.y, player.sprite.x, player.sprite.y);
 
-        if (dist < this.magnetRange) {
+        // Use player stats for pickup range if available
+        const magnetRange = (player.stats && player.stats.pickupRange) ? player.stats.pickupRange : this.magnetRange;
+
+        if (dist < magnetRange) {
             this.scene.physics.moveToObject(this, player.sprite, 400);
         }
 
