@@ -76,6 +76,7 @@ export default class GameScene extends Phaser.Scene {
 
         // Collisions
         this.physics.add.collider(this.player.sprite, this.groundGroup);
+        // Explicitly set collision for all enemies added to group
         this.physics.add.collider(this.enemiesGroup, this.groundGroup);
 
         // Combat Collisions

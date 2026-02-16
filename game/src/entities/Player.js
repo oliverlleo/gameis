@@ -1,6 +1,7 @@
 import { PHYSICS_CONFIG } from '../config/physicsConfig.js';
 import { COMBAT_CONFIG } from '../config/combatConfig.js';
 import SkillSystem from '../systems/SkillSystem.js';
+import SlashEffect from './VFX/SlashEffect.js';
 import eventBus from '../core/EventBus.js';
 
 export default class Player {
@@ -172,9 +173,10 @@ export default class Player {
         this.sprite.play(animKey);
 
         // Hitbox Event
-        // Ideally we use animation events, but timer is safer without complex asset setup
         this.scene.time.delayedCall(config.startup / speed, () => {
              this.createHitbox(type);
+             // Visual Slash
+             new SlashEffect(this.scene, this.sprite.x, this.sprite.y, !this.facingRight);
         });
 
         // Recovery/Cancel Window

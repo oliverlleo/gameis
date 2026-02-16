@@ -81,10 +81,10 @@ export default class ProceduralChunkSystem {
             }
 
             cx += width;
-            // Gap logic: Only small gaps
-            if (cx < xStart + this.chunkSize && this.rng.random() < 0.2) {
-                cx += 100; // Small jumpable gap
-            }
+            // Removed gaps completely for now to guarantee traversability
+            // if (cx < xStart + this.chunkSize && this.rng.random() < 0.2) {
+            //    cx += 100;
+            // }
         }
 
         // Spawn Enemies

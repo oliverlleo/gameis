@@ -92,6 +92,9 @@ export default class EnemyBase {
     }
 
     handleMovement(delta) {
+        // Ensure Physics Body is active
+        if (!this.sprite.body) return;
+
         const speed = this.moveSpeed * this.speedMultiplier;
 
         if (this.state === 'IDLE' || this.state === 'PATROL') {
