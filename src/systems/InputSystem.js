@@ -13,7 +13,7 @@ export default class InputSystem {
       skill3: 'E',
       skill4: 'R',
       skill5: 'F',
-      pause: 'ESCAPE',
+      pause: 'ESC',
       debug: 'F3'
     };
     this.keys = {};
@@ -22,11 +22,19 @@ export default class InputSystem {
   init(savedBindings = null) {
     if (savedBindings) this.bindings = { ...this.bindings, ...savedBindings };
     for (const [action, code] of Object.entries(this.bindings)) {
-      const keyCode = Phaser.Input.Keyboard.KeyCodes[code];
-      if (keyCode !== undefined) {
-        this.keys[action] = this.scene.input.keyboard.addKey(keyCode);
-      } else {
-        console.warn(`[InputSystem] Invalid KeyCode for binding '${action}': ${code}`);
+      try {
+        const keyCode = Phaser.Input.Keyboard.KeyCodes[code];
+        if (keyCode !== undefined) {
+          // Clean up existing key if present to avoid duplicates/leaks
+          if (this.keys[action]) {
+            this.scene.input.keyboard.removeKey(this.keys[action]);
+          }
+          this.keys[action] = this.scene.input.keyboard.addKey(keyCode);
+        } else {
+          console.warn(`[InputSystem] Invalid KeyCode for binding '${action}': ${code}`);
+        }
+      } catch (e) {
+        console.error(`[InputSystem] Failed to register key '${code}' for '${action}':`, e);
       }
     }
   }
@@ -35,6 +43,12 @@ export default class InputSystem {
     if (!this.bindings[action]) return false;
     const upper = String(code).toUpperCase();
     if (!Phaser.Input.Keyboard.KeyCodes[upper]) return false;
+
+    // Clean up old key
+    if (this.keys[action]) {
+        this.scene.input.keyboard.removeKey(this.keys[action]);
+    }
+
     this.bindings[action] = upper;
     this.keys[action] = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[upper]);
     return true;
