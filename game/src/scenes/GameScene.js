@@ -80,7 +80,7 @@ export default class GameScene extends Phaser.Scene {
 
         // Combat Collisions
         this.physics.add.overlap(this.player.sprite, this.enemiesGroup, (playerSprite, enemySprite) => {
-             if (enemySprite.entity && enemySprite.entity.active) {
+             if (enemySprite.entity && enemySprite.entity.isAlive) {
                  this.combatSystem.handleHit(enemySprite, playerSprite);
              }
         });
@@ -101,28 +101,36 @@ export default class GameScene extends Phaser.Scene {
         };
         eventBus.on('open-shop', this.shopListener);
 
-        // Audio Listeners
-        eventBus.on(EVENTS.PLAYER_DAMAGED, () => this.audioSystem.playSound('player-hit'));
-        eventBus.on(EVENTS.ENEMY_DAMAGED, () => this.audioSystem.playSound('enemy-hit'));
-        eventBus.on('skill-used', () => this.audioSystem.playSound('shoot'));
-        eventBus.on('gold-gained', () => this.audioSystem.playSound('loot'));
-        eventBus.on('boss-spawn', () => this.audioSystem.playMusic('combat'));
+        // Audio Listeners (Stored reference for removal)
+        this.onPlayerHit = () => this.audioSystem.playSound('player-hit');
+        this.onEnemyHit = () => this.audioSystem.playSound('enemy-hit');
+        this.onSkillUsed = () => this.audioSystem.playSound('shoot');
+        this.onLoot = () => this.audioSystem.playSound('loot');
+        this.onBossSpawn = () => this.audioSystem.playMusic('combat');
+
+        eventBus.on(EVENTS.PLAYER_DAMAGED, this.onPlayerHit);
+        eventBus.on(EVENTS.ENEMY_DAMAGED, this.onEnemyHit);
+        eventBus.on('skill-used', this.onSkillUsed);
+        eventBus.on('gold-gained', this.onLoot);
+        eventBus.on('boss-spawn', this.onBossSpawn);
 
         // Start Music
         this.audioSystem.playMusic('exploration');
 
         // Autosave
-        this.time.addEvent({
+        this.autosaveEvent = this.time.addEvent({
             delay: 30000,
             loop: true,
             callback: () => this.saveGame()
         });
 
         // Cleanup on shutdown
-        this.events.on('shutdown', this.shutdown, this);
+        this.events.once('shutdown', this.shutdown, this);
     }
 
     saveGame() {
+        if (!this.player || !this.progressionSystem) return;
+
         const data = {
             player: {
                 x: this.player.sprite.x,
@@ -144,12 +152,23 @@ export default class GameScene extends Phaser.Scene {
     }
 
     shutdown() {
+        // Remove Listeners
         eventBus.off('open-shop', this.shopListener);
-        // Clear audio listeners to avoid duplication
-        eventBus.off(EVENTS.PLAYER_DAMAGED);
-        eventBus.off(EVENTS.ENEMY_DAMAGED);
+        eventBus.off(EVENTS.PLAYER_DAMAGED, this.onPlayerHit);
+        eventBus.off(EVENTS.ENEMY_DAMAGED, this.onEnemyHit);
+        eventBus.off('skill-used', this.onSkillUsed);
+        eventBus.off('gold-gained', this.onLoot);
+        eventBus.off('boss-spawn', this.onBossSpawn);
+
+        // System Cleanups
+        if (this.progressionSystem) this.progressionSystem.destroy();
+        if (this.economySystem) this.economySystem.destroy();
+        if (this.lootSystem) this.lootSystem.destroy();
+
         // Stop music
         if (this.audioSystem) this.audioSystem.stopMusic();
+
+        if (this.autosaveEvent) this.autosaveEvent.remove();
     }
 
     getEnemies() {

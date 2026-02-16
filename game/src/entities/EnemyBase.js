@@ -1,5 +1,6 @@
 import { PHYSICS_CONFIG } from '../config/physicsConfig.js';
 import eventBus from '../core/EventBus.js';
+import { EVENTS } from '../core/Constants.js';
 
 export default class EnemyBase {
     constructor(scene, x, y, textureKey) {
@@ -16,6 +17,10 @@ export default class EnemyBase {
             damage: 10, defense: 0,
             xpReward: 10
         };
+
+        // Lifecycle
+        this.isAlive = true;
+        this.active = true; // Sync with sprite active?
 
         // FSM
         this.state = 'IDLE';
@@ -42,26 +47,19 @@ export default class EnemyBase {
     }
 
     update(time, delta) {
-        if (!this.sprite.active || this.stats.hp <= 0) return;
+        if (!this.isAlive || !this.sprite.active) return;
 
         this.target = this.scene.player;
 
-        // Update Status
-        if (this.scene.statusSystem) {
-             // We need to call this externally or hook it here
-             // Assuming StatusSystem handles its own update loop over a group?
-             // No, StatusSystem.update(target, delta) is manual.
-             // We should call it. But creating new StatusSystem every frame is bad.
-             // Assume Scene has it.
-             // this.scene.statusSystem.update(this, delta);
-             // Actually, let's create a shared instance helper or just manual logic in StatusSystem
-        }
+        // Manual Status Update called by GameScene loop over group
 
         this.handleState(time, delta);
         this.handleMovement(delta);
     }
 
     handleState(time, delta) {
+        if (!this.target || !this.target.sprite) return;
+
         const dist = Phaser.Math.Distance.Between(this.sprite.x, this.sprite.y, this.target.sprite.x, this.target.sprite.y);
         const hpPct = this.stats.hp / this.stats.maxHp;
 
@@ -79,19 +77,16 @@ export default class EnemyBase {
                 if (time - this.lastAttackTime > this.attackCooldown) {
                     this.attack(time);
                 } else {
-                    // Recover/Circle?
                     if (dist > this.attackRange) this.state = 'CHASE';
                 }
                 break;
             case 'EVADE':
-                // Retreat logic
                 if (dist > this.detectionRange) {
                     this.state = 'RECOVER';
                 }
                 break;
             case 'RECOVER':
-                // Wait for HP regen or cooldown?
-                if (dist < this.detectionRange) this.state = 'CHASE'; // Re-engage
+                if (dist < this.detectionRange) this.state = 'CHASE';
                 break;
         }
     }
@@ -109,53 +104,73 @@ export default class EnemyBase {
             this.sprite.setVelocityX(speed * dir);
             this.sprite.setFlipX(dir < 0);
         } else if (this.state === 'EVADE') {
-            const dir = this.target.sprite.x > this.sprite.x ? -1 : 1; // Run away
+            const dir = this.target.sprite.x > this.sprite.x ? -1 : 1;
             this.sprite.setVelocityX(speed * 1.2 * dir);
             this.sprite.setFlipX(dir < 0);
 
-            // Timeout evade
-            this.scene.time.delayedCall(2000, () => {
-                this.hasEvaded = true;
-                this.state = 'CHASE';
-            });
+            if (!this.evadeTimer) {
+                this.evadeTimer = this.scene.time.delayedCall(2000, () => {
+                    this.hasEvaded = true;
+                    if(this.isAlive) this.state = 'CHASE';
+                    this.evadeTimer = null;
+                });
+            }
         } else {
             this.sprite.setVelocityX(0);
         }
     }
 
     attack(time) {
+        if (!this.isAlive) return;
         this.lastAttackTime = time;
-        eventBus.emit('enemy-attack', { attacker: this, target: this.target });
+        eventBus.emit(EVENTS.ENEMY_ATTACK || 'enemy-attack', { attacker: this, target: this.target });
         this.sprite.setTint(0xff0000);
-        this.scene.time.delayedCall(200, () => this.sprite.clearTint());
+        this.scene.time.delayedCall(200, () => {
+            if(this.isAlive && this.sprite.active) this.sprite.clearTint();
+        });
 
-        // Simple hit
         const dist = Phaser.Math.Distance.Between(this.sprite.x, this.sprite.y, this.target.sprite.x, this.target.sprite.y);
         if (dist < this.attackRange + 20) {
-            this.target.takeDamage(this.stats.damage);
+            // Apply damage via CombatSystem?
+            // Better to emit event or call takeDamage directly if simple
+            // Using CombatSystem is P1. For P0, direct call safe.
+            if(this.target.takeDamage) this.target.takeDamage(this.stats.damage);
         }
     }
 
     takeDamage(amount, source) {
+        if (!this.isAlive) return;
+
         const actual = Math.max(1, amount - this.stats.defense);
         this.stats.hp -= actual;
 
         this.sprite.setTint(0xffffff);
-        this.scene.time.delayedCall(100, () => this.sprite.clearTint());
+        this.scene.time.delayedCall(100, () => {
+            if(this.isAlive && this.sprite.active) this.sprite.clearTint();
+        });
 
-        // Knockback logic is in CombatSystem, but if we need custom reaction:
         if (this.stats.hp <= 0) {
             this.die();
         } else {
-            // Aggro or Stun?
             this.state = 'CHASE';
         }
     }
 
     die() {
-        if (!this.active) return;
-        eventBus.emit( 'enemy-died', { enemy: this, xp: this.stats.xpReward });
-        this.sprite.destroy();
+        if (!this.isAlive) return;
+        this.isAlive = false;
         this.active = false;
+
+        // Emit exactly once
+        eventBus.emit(EVENTS.ENEMY_DIED || 'enemy-died', { enemy: this, xp: this.stats.xpReward });
+
+        // Cleanup
+        if (this.sprite) {
+            this.sprite.destroy();
+            this.sprite = null;
+        }
+
+        // Cancel any timers?
+        if (this.evadeTimer) this.evadeTimer.remove(false);
     }
 }

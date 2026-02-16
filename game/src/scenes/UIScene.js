@@ -38,12 +38,16 @@ export default class UIScene extends Phaser.Scene {
         }
 
         // Listeners
+        this.goldHandler = (gold) => this.goldText.setText(`Gold: ${gold}`);
+
         eventBus.on('player-damaged', this.updateHP, this);
         eventBus.on('player-healed', this.updateHP, this);
         eventBus.on('xp-updated', this.updateXP, this);
         eventBus.on('level-up', this.handleLevelUp, this);
-        eventBus.on('gold-updated', (gold) => this.goldText.setText(`Gold: ${gold}`), this);
+        eventBus.on('gold-updated', this.goldHandler);
         eventBus.on('cooldown-start', this.startCooldown, this);
+
+        this.events.once('shutdown', this.shutdown, this);
 
         // Settings Button
         const settingsBtn = this.add.text(this.scale.width - 80, 60, 'OPTS', { fontSize: '16px', fill: '#aaa' })
@@ -101,5 +105,14 @@ export default class UIScene extends Phaser.Scene {
             duration: 2000,
             onComplete: () => txt.destroy()
         });
+    }
+
+    shutdown() {
+        eventBus.off('player-damaged', this.updateHP, this);
+        eventBus.off('player-healed', this.updateHP, this);
+        eventBus.off('xp-updated', this.updateXP, this);
+        eventBus.off('level-up', this.handleLevelUp, this);
+        eventBus.off('gold-updated', this.goldHandler);
+        eventBus.off('cooldown-start', this.startCooldown, this);
     }
 }
