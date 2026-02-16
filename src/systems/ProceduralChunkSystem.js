@@ -1,17 +1,15 @@
 import RNG from '../core/RNG.js';
 import { BIOME_CONFIG } from '../config/biomeConfig.js';
-import SpawnSystem from '../systems/SpawnSystem.js';
 
 export default class ProceduralChunkSystem {
     constructor(scene) {
         this.scene = scene;
-        // Configurable seed, could come from save data
         this.seed = scene.loadData && scene.loadData.seed ? scene.loadData.seed : Math.floor(Math.random() * 99999);
         this.rng = new RNG(this.seed);
         this.chunkSize = 2048;
         this.activeChunks = [];
         this.chunkIndex = 0;
-        this.spawnSystem = scene.spawnSystem; // Should be passed or retrieved
+        this.spawnSystem = scene.spawnSystem;
         
         // Initial setup
         this.createChunk(0);
@@ -21,18 +19,11 @@ export default class ProceduralChunkSystem {
     update(playerX) {
         const currentChunk = Math.floor(playerX / this.chunkSize);
         
-        // Load ahead
         if (currentChunk + 2 > this.chunkIndex) {
             this.chunkIndex++;
             this.createChunk(this.chunkIndex);
         }
 
-        // Unload behind
-        // Keep 2 behind, 2 ahead
-        // If index > current + 2, prune
-        // If index < current - 2, prune
-        
-        // Using activeChunks queue
         if (this.activeChunks.length > 5) {
             const oldChunk = this.activeChunks.shift();
             this.destroyChunk(oldChunk);
@@ -47,88 +38,68 @@ export default class ProceduralChunkSystem {
         const chunkData = {
             index: index,
             platforms: [],
-            enemies: [], // Should track spawned enemies to destroy them
-            decorations: []
+            enemies: [] 
         };
 
-        // Ground/Platform Generation
+        // Floor Generation
+        // Force create floor segments to guarantee walkable area
         let cx = xStart;
         const platforms = [];
         
         while (cx < xStart + this.chunkSize) {
-            const width = this.rng.randRange(200, 600);
-            if (cx + width > xStart + this.chunkSize) break;
+            let width = this.rng.randRange(400, 800); // Wide platforms
+            if (cx + width > xStart + this.chunkSize) width = (xStart + this.chunkSize) - cx;
             
-            // Gap logic
-            let isGap = false;
-            // No gap in first chunk
-            if (index > 0 && this.rng.random() < 0.2) {
-                isGap = true;
-                const gapSize = this.rng.randRange(100, 200); // 200 is jumpable
-                cx += gapSize;
-            } 
-            
-            if (!isGap) {
-                // Create floor
-                const floor = this.scene.groundGroup.create(cx, this.scene.game.config.height - 32, 'tile_ground')
-                    .setOrigin(0, 0)
-                    .setDisplaySize(width, 32)
-                    .refreshBody();
-                floor.setTint(biome.tileColor);
-                platforms.push(floor);
-                chunkData.platforms.push(floor);
+            // Create Floor TileSprite for better visuals if texture tiles
+            // Using existing logic:
+            const floor = this.scene.groundGroup.create(cx, this.scene.game.config.height - 32, 'tile_ground')
+                .setOrigin(0, 0)
+                .setDisplaySize(width, 32)
+                .refreshBody(); // Critical for collisions
                 
-                // Add higher platforms
-                if (this.rng.random() < 0.5) {
-                    const px = cx + this.rng.randRange(50, width - 100);
-                    const py = this.scene.game.config.height - 32 - this.rng.randRange(100, 250);
-                    const pWidth = this.rng.randRange(100, 300);
-                    const plat = this.scene.groundGroup.create(px, py, 'tile_platform')
-                        .setOrigin(0, 0)
-                        .setDisplaySize(pWidth, 20)
-                        .refreshBody();
-                    plat.setTint(biome.platformColor);
-                    
-                    // One-way collision
-                    plat.body.checkCollision.down = false;
-                    plat.body.checkCollision.left = false;
-                    plat.body.checkCollision.right = false;
-                    
-                    platforms.push(plat);
-                    chunkData.platforms.push(plat);
-                }
-                cx += width;
+            floor.setTint(biome.tileColor);
+            platforms.push(floor);
+            chunkData.platforms.push(floor);
+            
+            // Platform Logic
+            if (this.rng.random() < 0.6) {
+                const px = cx + this.rng.randRange(50, width - 150);
+                const py = this.scene.game.config.height - 150;
+                const pw = this.rng.randRange(100, 300);
+                
+                const plat = this.scene.groundGroup.create(px, py, 'tile_platform')
+                    .setOrigin(0, 0)
+                    .setDisplaySize(pw, 20)
+                    .refreshBody();
+                
+                plat.body.checkCollision.down = false;
+                plat.body.checkCollision.left = false;
+                plat.body.checkCollision.right = false;
+                
+                platforms.push(plat);
+                chunkData.platforms.push(plat);
+            }
+
+            cx += width;
+            // Gap logic: Only small gaps
+            if (cx < xStart + this.chunkSize && this.rng.random() < 0.2) {
+                cx += 100; // Small jumpable gap
             }
         }
         
-        // Spawn Enemies via SpawnSystem
+        // Spawn Enemies
         if (this.spawnSystem) {
              this.spawnSystem.spawnInChunk(xStart, this.chunkSize, platforms, biomeId, 1 + (index * 0.1));
         }
 
         this.activeChunks.push(chunkData);
-        
-        // Update background color based on biome
-        // Smooth transition? Just set for now.
-        // this.scene.cameras.main.setBackgroundColor(biome.backgroundColor);
+        this.scene.cameras.main.setBackgroundColor(biome.backgroundColor);
     }
 
     destroyChunk(chunk) {
         chunk.platforms.forEach(p => p.destroy());
-        
-        // Cleanup enemies spawned in this chunk
-        // We need to iterate global group and check bounds or tag
-        // Simple distance check: if enemy is far behind player, kill it.
-        const playerX = this.scene.player.sprite.x;
-        this.scene.enemiesGroup.children.each(enemySprite => {
-            if (enemySprite.x < playerX - 3000) { // 1.5 chunks behind
-                if (enemySprite.entity && enemySprite.entity.die) {
-                    enemySprite.entity.die(); // Graceful death (without rewards?)
-                } else {
-                    enemySprite.destroy();
-                }
-            }
-        });
+        // Cleanup enemies logic (by distance) handled in GameScene or here?
+        // Let's rely on GameScene update loop to kill far enemies
     }
     
     getBiomeForChunk(index) {

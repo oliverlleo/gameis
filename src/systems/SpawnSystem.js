@@ -33,47 +33,51 @@ export default class SpawnSystem {
         const biome = Object.values(BIOME_CONFIG).find(b => b.id === biomeId);
         if (!biome) return;
 
-        // Density based on difficulty
-        const density = 0.002 * (1 + difficulty * 0.2); 
+        // Force spawn at least some enemies per chunk
+        // Density logic:
+        const count = Math.floor(difficulty * 2) + 2; // Min 2 enemies
         
-        platforms.forEach(platform => {
-            if (platform.width > 100 && Math.random() < density * platform.width) {
-                // Determine Enemy Type
+        for(let i=0; i<count; i++) {
+            const platform = Phaser.Math.RND.pick(platforms);
+            if (platform) {
                 const enemyType = Phaser.Math.RND.pick(biome.enemies);
                 const EnemyClass = this.spawnMap[enemyType];
                 
                 if (EnemyClass) {
-                    const x = platform.x + Math.random() * (platform.width - 50);
-                    const y = platform.y - 50;
+                    const x = platform.x + Math.random() * (platform.width * 0.8);
+                    const y = platform.y - 60;
                     
-                    // Avoid spawning directly on player spawn (first chunk)
-                    if (chunkX === 0 && x < 400) return;
+                    // Safety check: Don't spawn on player start
+                    if (chunkX === 0 && x < 600) continue;
 
-                    const enemy = new EnemyClass(this.scene, x, y);
-                    
-                    // Add to group
-                    this.scene.enemiesGroup.add(enemy.sprite);
-                    
-                    // Elite chance
-                    if (Math.random() < 0.05 * difficulty) {
-                        this.makeElite(enemy);
+                    try {
+                        const enemy = new EnemyClass(this.scene, x, y);
+                        this.scene.enemiesGroup.add(enemy.sprite);
+                        
+                        console.log(`Spawned ${enemyType} at ${Math.floor(x)}, ${Math.floor(y)}`);
+                        
+                        // Elite
+                        if (Math.random() < 0.1) this.makeElite(enemy);
+                    } catch (e) {
+                        console.error("Spawn Error:", e);
                     }
                 }
             }
-        });
+        }
     }
     
     makeElite(enemy) {
-        enemy.sprite.setScale(enemy.sprite.scaleX * 1.2);
+        enemy.sprite.setScale(1.2);
         enemy.stats.hp *= 2;
         enemy.stats.damage *= 1.5;
-        enemy.stats.xpReward *= 3;
-        enemy.sprite.setTint(0xffd700); // Gold
+        enemy.sprite.setTint(0xffd700);
         enemy.isElite = true;
     }
 
-    spawnBoss(x, y, level) {
-        const BossClass = (level % 2 !== 0) ? BossA : BossB;
+    spawnBoss(type, x) {
+        console.log(`Spawning Boss: ${type}`);
+        const BossClass = (type === 'boss_a') ? BossA : BossB;
+        const y = this.scene.game.config.height - 200;
         const boss = new BossClass(this.scene, x, y);
         this.scene.enemiesGroup.add(boss.sprite);
         return boss;
