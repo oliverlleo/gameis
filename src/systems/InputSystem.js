@@ -13,7 +13,7 @@ export default class InputSystem {
       skill3: 'E',
       skill4: 'R',
       skill5: 'F',
-      pause: 'ESC',
+      pause: 'ESCAPE',
       debug: 'F3'
     };
     this.keys = {};
@@ -22,7 +22,12 @@ export default class InputSystem {
   init(savedBindings = null) {
     if (savedBindings) this.bindings = { ...this.bindings, ...savedBindings };
     for (const [action, code] of Object.entries(this.bindings)) {
-      this.keys[action] = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[code]);
+      const keyCode = Phaser.Input.Keyboard.KeyCodes[code];
+      if (keyCode !== undefined) {
+        this.keys[action] = this.scene.input.keyboard.addKey(keyCode);
+      } else {
+        console.warn(`[InputSystem] Invalid KeyCode for binding '${action}': ${code}`);
+      }
     }
   }
 
@@ -36,13 +41,13 @@ export default class InputSystem {
   }
 
   getAxisX() {
-    const l = this.keys.left.isDown ? -1 : 0;
-    const r = this.keys.right.isDown ? 1 : 0;
+    const l = this.keys.left?.isDown ? -1 : 0;
+    const r = this.keys.right?.isDown ? 1 : 0;
     return l + r;
   }
 
   pressed(action) {
-    return Phaser.Input.Keyboard.JustDown(this.keys[action]);
+    return this.keys[action] && Phaser.Input.Keyboard.JustDown(this.keys[action]);
   }
 
   down(action) {
@@ -50,7 +55,7 @@ export default class InputSystem {
   }
 
   released(action) {
-    return Phaser.Input.Keyboard.JustUp(this.keys[action]);
+    return this.keys[action] && Phaser.Input.Keyboard.JustUp(this.keys[action]);
   }
 
   getSnapshot() {
